@@ -1,0 +1,38 @@
+{
+  "name": "python-scribus-boilerplate",
+  "version": "1.0.0",
+  "description": "A boilerplate for creating Python scripts for Scribus",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "Leonardo Pinheiro",
+  "license": "MIT",
+  "scripts": {
+    "clear": "bash ./scripts/clear_project.sh",
+
+    "format": "autopep8 --in-place ./src/main.py" ,
+
+    "update:make_bat": "bash ./scripts/update_make_bat.sh",
+
+    "build:source:doc": "sphinx-apidoc --force -o ./docs/sphinx/source ./src ./src/activerecord/db_credentials.py",
+    "make:clean": "cd ./docs/sphinx && make clean && cd .. && cd ..",
+    "make:html": "cd ./docs/sphinx && make html && cd .. && cd ..",
+    "make:doc": "npm run make:clean && npm run make:html",
+    "build:doc": "npm run build:source:doc && npm run make:doc",
+    "watch:doc": "npx nodemon --ext py --watch ./src --exec \"npm run build:doc\"",
+    "server:doc": "npx live-server ./docs/sphinx/build/html --no-css-inject --port=8080 --wait=5000",
+
+    "clear:coverage": "coverage erase",
+    "build:source:coverage": "coverage run -m unittest discover",
+    "build:html:coverage": "coverage html",
+    "test": "npm run clear:coverage && npm run build:source:coverage && npm run build:html:coverage",
+    "watch:test": "npx nodemon --ext py --watch ./src --watch ./tests --exec \"npm run test\"",
+    "server:test": "npx live-server ./docs/coverage/htmlcov --no-css-inject --port=8181"
+  },
+  "devDependencies": {
+    "live-server": "^1.1.0",
+    "nodemon": "^2.0.19"
+  }
+}
