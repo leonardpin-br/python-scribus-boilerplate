@@ -53,9 +53,9 @@ This starter kit allows the development of a more powerfull tool. Instead of cre
 
 
 ## It includes
-    1. Easy password hashing and verification (bcrypt). Even though Autodesk Maya is not able to load
-    the BCrypt package, if the user of this kit needs to hash and verify a password, it is already
-    preconfigured.
+    1. Easy password hashing and verification (bcrypt). Even though Scribus is not able to load
+    the BCrypt package more than once per session, if the user of this kit needs to hash and 
+    verify a password, it is already preconfigured.
     2. An abstract class to be inherited by all the others that access
     the database. It is an application of the Active Record design pattern.
     3. Two example subclasses are provided. One for a product and one for
@@ -65,6 +65,7 @@ This starter kit allows the development of a more powerfull tool. Instead of cre
     5. General and validation functions that can be easily reused in other projects.
     6. Unit tests and coverage are preconfigured.
     7. Line endings are preconfigured.
+    8. QR Code generation is preconfigured.
 
 
 
@@ -85,7 +86,9 @@ The provided `package.json` file has many useful scripts.
 ### MySQL
 
 Having a MySQL database server is only necessary if you need communication with
-one. If your scripts do not access a database, you do not need it.
+one. If your scripts do not access a database, you do not need it. 
+
+If you will not use a database, remove te `import` statements.
 
 If you use a Database Management System (DBMS) different from MySQL, editing the
 code will be easy.

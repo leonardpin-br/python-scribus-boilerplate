@@ -10,7 +10,6 @@ References:
 
 from . import db_credentials
 import shared
-shared.add_site_packages_to_sys_path(__file__)
 
 from mysql.connector import errorcode
 import mysql.connector

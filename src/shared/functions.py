@@ -25,7 +25,8 @@ import subprocess
 
 
 def add_site_packages_to_sys_path(path_to_module, venv_folder_name='py37env'):
-    """Adds the site-packages folder to sys.path.
+    """Adds the site-packages folder to sys.path. It is better not to use this
+    function. Doing it in the `main.py` file gives the best result.
 
     Args:
         path_to_module (str): The full path to the module calling this function.
@@ -137,9 +138,6 @@ def number_format(num, places=0):
 
     return locale.format_string("%.*f", (places, num), True)
 
-
-# Adds the package inside <project_root>/py37env/Lib/site-packages folder.
-add_site_packages_to_sys_path(__file__)
 
 # Scribus throws an error if the main.py file is executed more than once when
 # BCrypt is imported. Outside Scribus the line below works fine.

@@ -114,19 +114,22 @@ src_dir = os.path.realpath(os.path.dirname(__file__))
 project_root_dir = os.path.realpath(os.path.dirname(src_dir))
 site_packages_from_venv = os.path.join(project_root_dir, "py37env", "Lib", "site-packages")
 
-# If the path is not in sys.path:
-for path in sys.path:
-    if path == src_dir:
-        break
-else:
-    sys.path.insert(0, src_dir)
-    
-# If the path is not in sys.path:
-for path in sys.path:
-    if path == site_packages_from_venv:
-        break
-else:
-    sys.path.insert(1, site_packages_from_venv)
+dir_to_add_to_sys_path = [
+    src_dir,
+    site_packages_from_venv
+]
+
+counter = 0
+for dir in dir_to_add_to_sys_path:
+
+    # If the path is not in sys.path:
+    for path in sys.path:
+        if path == dir:
+            break
+    else:
+        sys.path.insert(counter, dir)
+        
+    counter = counter + 1
 
 import segno
 
@@ -160,6 +163,11 @@ def create_qr_code(target, filename):
         target (str): The target of the QR Code (link address).
         filename (str): The name without the SVG extension of the file that will
             be created.
+
+    Example:
+        How to call this function::
+
+            create_qr_code("https://www.leonardopinheiro.net", "basic_qrcode")
 
     Returns:
         str: Full path to file.
@@ -223,13 +231,10 @@ def main():
     # scribus.selectText(19, length-19, textbox)
     # scribus.setFontSize(14.0, textbox)
     
-    # message = "Hello"
-    # print(message)
     
-    #     scribus.messageBox('Console simulation', "The ID of the admin was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
+    #     scribus.messageBox('Console simulation', "Example message used for debugging.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
     
-    create_qr_code("https://www.leonardopinheiro.net", "basic_qrcode")
-    
+    print("Hello, World!")
 
 
 

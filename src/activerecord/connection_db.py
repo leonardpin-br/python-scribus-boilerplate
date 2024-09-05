@@ -4,7 +4,6 @@ __author__ = "Leonardo Pinheiro <info@leonardopinheiro.net>"
 __link__ = "https://www.leonardopinheiro.net"
 
 import shared
-shared.add_site_packages_to_sys_path(__file__)
 from . import database_functions
 
 import mysql.connector
