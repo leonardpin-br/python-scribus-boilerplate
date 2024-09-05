@@ -109,15 +109,10 @@ References:
 import os
 import sys
 
-try:
-    import scribus
-except ImportError:
-    print("Unable to import the 'scribus' module. This script will only run within")
-    print("the Python interpreter embedded in Scribus. Try Script->Execute Script.")
-    sys.exit(1)
-
-# Gets the full path of this script file dinamically.
+# Gets the full paths dinamically.
 src_dir = os.path.realpath(os.path.dirname(__file__))
+project_root_dir = os.path.realpath(os.path.dirname(src_dir))
+site_packages_from_venv = os.path.join(project_root_dir, "py37env", "Lib", "site-packages")
 
 # If the path is not in sys.path:
 for path in sys.path:
@@ -125,6 +120,21 @@ for path in sys.path:
         break
 else:
     sys.path.insert(0, src_dir)
+    
+# If the path is not in sys.path:
+for path in sys.path:
+    if path == site_packages_from_venv:
+        break
+else:
+    sys.path.insert(1, site_packages_from_venv)
+
+import segno
+
+# try:
+#     import scribus
+# except ImportError:
+#     print("Unable to import the 'scribus' module. This script will only run within")
+#     print("the Python interpreter embedded in Scribus. Try Script->Execute Script.")
 
 from appclasses import Admin, Bicycle
 import shared
@@ -142,11 +152,42 @@ def untested_function():
     return False
 
 
+def create_qr_code(target, filename):
+    """Creates the QR Code in SVG format and stores it in the 
+    `<project_root>/resources/svg` folder.
+
+    Args:
+        target (str): The target of the QR Code (link address).
+        filename (str): The name without the SVG extension of the file that will
+            be created.
+
+    Returns:
+        str: Full path to file.
+
+    References:
+        `Generate Beautiful QR Codes With Python`_
+
+    .. _Generate Beautiful QR Codes With Python:
+       https://realpython.com/python-generate-qr-code/
+
+    """
+    qrcode = segno.make_qr(target)
+    full_path_to_file = os.path.join(project_root_dir, "resources", "svg", filename + ".svg")
+    qrcode.save(
+        full_path_to_file,
+        kind="svg",
+        scale=5,
+        border=4,
+        light="#ffffff",
+        dark="#000000",
+        quiet_zone="#ffffff"
+    )
+    return full_path_to_file
+
+
 def main():
     """The main function to execute the entire project/application.
     """
-    # os.system('cls' if os.name == 'nt' else 'clear')
-    
     # if not scribus.haveDoc():
     #     # scribus.newDocument(PAPER_A4, (10, 10, 10, 10), PORTRAIT, 1, UNIT_MILLIMETERS, PAGE_1, 0, 2)
     #     scribus.messageBox('Scribus - Script Error', "No document open",
@@ -185,335 +226,10 @@ def main():
     # message = "Hello"
     # print(message)
     
-    
-    
-    # BICYCLE: FIND ALL
-    # ==========================================================================
-    # bikes = Bicycle.find_all()
-    
-    # for bike in bikes:
-        
-        # FOR TESTING IN THE DEVELOPMENT ENVIRONMENT:
-        # -------------------------------------------
-        # print(bike.brand)
-        # print(bike.model)
-        # print(bike.year)
-        # print(bike.category)
-        # print(bike.gender)
-        # print(bike.color)
-        # print("{weight_kg} / {weight_lbs}".format(weight_kg=bike.get_weight_kg(), weight_lbs=bike.weight_lbs))
-        # print(bike.condition_id)
-        # print(bike.price)
-        # print("====================================================\n\n")
-        
-        # FOR TESTING INSIDE SCRIBUS:
-        # ---------------------------
-        # bike_as_text = bike.brand + "\n"
-        # bike_as_text += bike.model + "\n"
-        # bike_as_text += "{bike_year}".format(bike_year=bike.year) + "\n"
-        # bike_as_text += bike.category + "\n"
-        # bike_as_text += bike.gender + "\n"
-        # bike_as_text += bike.color + "\n"
-        # bike_as_text += "{weight_kg} / {weight_lbs}".format(weight_kg=bike.get_weight_kg(), weight_lbs=bike.weight_lbs) + "\n"
-        # bike_as_text += "{bike_condition_id}".format(bike_condition_id=bike.condition_id) + "\n"
-        # bike_as_text += "{bike_price}".format(bike_price=bike.price) + "\n"
-        # bike_as_text +="====================================================\n\n"
-        # scribus.messageBox('Console simulation', bike_as_text, scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # BICYCLE: FIND BY ID
-    # ==========================================================================
-    # bike = Bicycle.find_by_id(2)
-    
-    # if bike:
-    
-    # FOR TESTING IN THE DEVELOPMENT ENVIRONMENT:
-    # -------------------------------------------
-    #     print(bike.name())
-    #     print("-------------------------------------------")
-    #     print(bike.id)
-    #     print(bike.brand)
-    #     print(bike.model)
-    #     print(bike.year)
-    #     print(bike.category)
-    #     print(bike.gender)
-    #     print(bike.color)
-    #     print("{weight_kg} / {weight_lbs}".format(weight_kg=bike.get_weight_kg(), weight_lbs=bike.weight_lbs))
-    #     print(bike.condition())
-    #     print("${price}".format(price=bike.price))
-    # else:
-    #     print("The ID was not found.")
-        
-    # FOR TESTING INSIDE SCRIBUS:
-    # ---------------------------
-    #     bike_as_text = bike.name() + "\n"
-    #     bike_as_text += "-------------------------------------------" + "\n"
-    #     bike_as_text += "{bike_id}".format(bike_id=bike.id) + "\n"
-    #     bike_as_text += bike.brand + "\n"
-    #     bike_as_text += bike.model + "\n"
-    #     bike_as_text += "{bike_year}".format(bike_year=bike.year) + "\n"
-    #     bike_as_text += bike.category + "\n"
-    #     bike_as_text += bike.gender + "\n"
-    #     bike_as_text += bike.color + "\n"
-    #     bike_as_text += "{weight_kg} / {weight_lbs}".format(weight_kg=bike.get_weight_kg(), weight_lbs=bike.weight_lbs) + "\n"
-    #     bike_as_text += bike.condition() + "\n"
-    #     bike_as_text += "${price}".format(price=bike.price) + "\n"
-    #     scribus.messageBox('Console simulation', bike_as_text, scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    #     message = "The ID was not found."
-    #     scribus.messageBox('Console simulation', message, scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # BICYCLE: CREATING A RECORD
-    # ==========================================================================
-    # bicycle = Bicycle(brand="Schwinn", model="Cutter", year=2016, category="City", color="white",
-    #                   gender="Unisex", price=450, weight_kg=18, condition_id=4, description="")
-    # bicycle = Bicycle(brand="Mongoose", model="Switchback Sport", year=2015, category="Mountain", color="blue",
-    #                   gender="Mens", price=399, weight_kg=24, condition_id=2, description="")
-    # kwargs = {
-    #     "brand": "Diamondback",
-    #     "model": "Bob's Overdrive",
-    #     "year": 2016,
-    #     "category": "Mountain",
-    #     "color": "dark green",
-    #     "gender": "Unisex",
-    #     "price": 565,
-    #     "weight_kg": 23.7,
-    #     "condition_id": 3,
-    #     "description": ""
-    # }
-    # kwargs = {
-    #     "brand": "Schwinn",
-    #     "model": "Sanctuary 7-Speed",
-    #     "year": 2016,
-    #     "category": "Cruiser",
-    #     "color": "purple",
-    #     "gender": "Womens",
-    #     "price": 190,
-    #     "weight_kg": 19.5,
-    #     "condition_id": 3,
-    #     "description": ""
-    # }
-    # kwargs = {
-    #     "brand": "Junk Bike",
-    #     "model": "Delete me",
-    #     "year": 1998,
-    #     "category": "Road",
-    #     "color": "white",
-    #     "gender": "Mens",
-    #     "price": 2,
-    #     "weight_kg": 1,
-    #     "condition_id": 3,
-    #     "description": ""
-    # }
-    
-    # bicycle = Bicycle(**kwargs)
-    # result = bicycle.save()
-    # if result:
-    #     print("The new ID is: {id}".format(id=bicycle.id))
-    #     print("The bicycle was created successfully.")
-    
-        # scribus.messageBox('Console simulation', "The new ID is: {id}".format(id=bicycle.id), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-        # scribus.messageBox('Console simulation', "The bicycle was created successfully.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-        
-    # else:
-    #     print(shared.display_errors(bicycle.errors))
-        # scribus.messageBox('Console simulation', shared.display_errors(bicycle.errors), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    
-    # BICYCLE: UPDATING A RECORD
-    # ==========================================================================
-    # bike = Bicycle.find_by_id(7)
-    
-    # if bike:
-    
-    #     kwargs = {
-    #         "id": bike.id,
-    #         "brand": bike.brand, # bike.brand
-    #         "model": "Bob's Overdrive", # Bob's Overdrive
-    #         "year": bike.year,
-    #         "category": bike.category,
-    #         "gender": bike.gender,
-    #         "color": bike.color,
-    #         "weight_kg": bike.weight_kg,
-    #         "condition": bike.condition,
-    #         "price": bike.price
-    #     }
-    
-    #     bike.merge_attributes(**kwargs)
-    #     result = bike.save()
-    #     if result:
-    # #         print("The bicycle was updated successfully.")
-    #         scribus.messageBox('Console simulation', "The bicycle was updated successfully.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     else:
-    # #         print(shared.display_errors(bike.errors))
-    #         scribus.messageBox('Console simulation', shared.display_errors(bike.errors), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    # #     print("The ID was not found.")
-    #     scribus.messageBox('Console simulation', "The ID was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # BICYCLE: DELETING A RECORD
-    # ==========================================================================
-    # bike = Bicycle.find_by_id(7)
-    
-    # if bike:
-    
-    #     result = bike.delete()
-    #     if result:
-    #         # print("{name} was deleted successfully.".format(name=bike.name()))
-    #         scribus.messageBox('Console simulation', "{name} was deleted successfully.".format(name=bike.name()), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     else:
-    #         # print("There was an error deleting the bicycle.")
-    #         scribus.messageBox('Console simulation', "There was an error deleting the bicycle.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    # else:
-    #     # print("The ID was not found.")
-    #     scribus.messageBox('Console simulation', "The ID was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: CREATING A RECORD
-    # ==========================================================================
-    # kwargs = {
-    #     "first_name": "Kevin",
-    #     "last_name": "Skoglund",
-    #     "email": "kevin@nowhere.com",
-    #     "username": "kskoglund",
-    #     "password": "Password#1234",
-    #     "confirm_password": "Password#1234"
-    # }
-    # kwargs = {
-    #     "first_name": "Bob",
-    #     "last_name": "Smith",
-    #     "email": "b@b.com",
-    #     "username": "bobsmith",
-    #     "password": "Password#1234",
-    #     "confirm_password": "Password#1234"
-    # }
-    
-    # admin = Admin(**kwargs)
-    # result = admin.save()
-    # if result:
-    #     # print("The ID of the new admin is: {id}".format(id=admin.id))
-    #     # print("The admin was created successfully.")
-    #     scribus.messageBox('Console simulation', "The ID of the new admin is: {id}".format(id=admin.id), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     scribus.messageBox('Console simulation', "The admin was created successfully.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    #     # print(shared.display_errors(admin.errors))
-    #     scribus.messageBox('Console simulation', shared.display_errors(admin.errors), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: FIND ALL
-    # ==========================================================================
-    # admins = Admin.find_all()
-    
-    # for admin in admins:
-    #     # print(admin.first_name)
-    #     # print(admin.last_name)
-    #     # print(admin.email)
-    #     # print(admin.username)
-    #     # print("====================================================\n\n")
-        
-    #     admin_as_text = admin.first_name + "\n"
-    #     admin_as_text += admin.last_name + "\n"
-    #     admin_as_text += admin.email + "\n"
-    #     admin_as_text += admin.username + "\n"
-    #     admin_as_text += "====================================================\n\n"
-    #     scribus.messageBox('Console simulation', admin_as_text, scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: FIND BY ID
-    # ==========================================================================
-    # admin = Admin.find_by_id(2)
-    
-    # if admin:
-    #     admin_as_text = admin.full_name() + "\n"
-    #     admin_as_text += "-------------------------------------------" + "\n"
-    #     admin_as_text += admin.first_name + "\n"
-    #     admin_as_text += admin.last_name + "\n"
-    #     admin_as_text += admin.email + "\n"
-    #     admin_as_text += admin.username + "\n"
-        
-    #     scribus.messageBox('Console simulation', admin_as_text, scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    #     # print("The ID was not found.")
-    #     scribus.messageBox('Console simulation', "The ID was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: UPDATING A RECORD
-    # ==========================================================================
-    # admin = Admin.find_by_id(2)
-    
-    # if admin:
-    
-    #     kwargs = {
-    #         "first_name": admin.first_name,
-    #         "last_name": admin.last_name,
-    #         "email": admin.email,
-    #         "username": "bobsmith",
-    #         "password": "",
-    #         "confirm_password": ""
-    #     }
-    
-    #     admin.merge_attributes(**kwargs)
-    #     result = admin.save()
-    #     if result:
-    #         # print("The admin was updated successfully.")
-    #         scribus.messageBox('Console simulation', "The admin was updated successfully.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     else:
-    #         # print(shared.display_errors(admin.errors))
-    #         scribus.messageBox('Console simulation', shared.display_errors(admin.errors), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    #     # print("The admin ID was not found.")
-    #     scribus.messageBox('Console simulation', "The admin ID was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: PASSWORD VERIFY
-    # ==========================================================================
-    # username = "bobsmith"
-    # password = "Password#1234"
-    # admin = Admin.find_by_username(username)
-    
-    # if admin:
-    #     if admin.verify_password(password):
-    #         # print("The given password match with the one stored in the database.")
-    #         scribus.messageBox('Console simulation', "The given password match with the one stored in the database.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     else:
-    #         # print("The admin password does not match with the original.")
-    #         scribus.messageBox('Console simulation', "The admin password does not match with the original.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    # else:
-    #     # print("The admin username was not found.")
-    #     scribus.messageBox('Console simulation', "The admin username was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    
-    
-    # ADMIN: DELETING A RECORD
-    # ==========================================================================
-    # admin = Admin.find_by_id(2)
-    
-    # if admin:
-    
-    #     result = admin.delete()
-    #     if result:
-    #         # print("The admin {name} was deleted successfully.".format(name=admin.full_name()))
-    #         scribus.messageBox('Console simulation', "The admin {name} was deleted successfully.".format(name=admin.full_name()), scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    #     else:
-    #         # print("There was an error deleting the admin.")
-    #         scribus.messageBox('Console simulation', "There was an error deleting the admin.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
-    
-    # else:
-    #     # print("The ID of the admin was not found.")
     #     scribus.messageBox('Console simulation', "The ID of the admin was not found.", scribus.ICON_INFORMATION, scribus.BUTTON_OK)
+    
+    create_qr_code("https://www.leonardopinheiro.net", "basic_qrcode")
+    
 
 
 
