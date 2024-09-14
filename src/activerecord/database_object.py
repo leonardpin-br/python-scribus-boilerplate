@@ -142,7 +142,6 @@ class DatabaseObject(ABC):          # Python 3.8.10 (debugged)
 
     @classmethod
     def count_all(cls):
-        
         """Returns the number of records from table.
         
         Returns:
