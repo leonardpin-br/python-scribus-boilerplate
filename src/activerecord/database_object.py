@@ -13,7 +13,7 @@ try:
 # If Python 2:
 except ImportError:
     from abc import ABCMeta, abstractmethod
-
+    
 sys.path.insert(0, os.path.abspath(".."))
 import shared
 from . connection_db import ConnectionDB
@@ -139,6 +139,26 @@ class DatabaseObject(ABC):          # Python 3.8.10 (debugged)
 
         sql = "SELECT * FROM " + cls._table_name
         return cls.find_by_sql(sql)
+
+    @classmethod
+    def count_all(cls):
+        
+        """Returns the number of records from table.
+        
+        Returns:
+            int: The number of records in the table.
+        """
+        sql = "SELECT COUNT(*) FROM " + cls._table_name
+        
+        # The query result is only one line with only one column.
+        # Because of that, there is no need for a dictionary.
+        # A normal list is enough. The list below contains one dictionary.
+        result_set = cls._database.query(sql)   # list
+        row = result_set[0]                     # dict
+        for _, value in row.items():
+            count = value
+        
+        return count
 
     @classmethod
     def find_by_id(cls, id):
