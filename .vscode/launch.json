@@ -12,10 +12,10 @@
             "terminalKind": "debugConsole"
         },
         {
-            "name": "Python: Current File",
+            "name": "Python: main.py File",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}${pathSeparator}src${pathSeparator}main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "justMyCode": true
